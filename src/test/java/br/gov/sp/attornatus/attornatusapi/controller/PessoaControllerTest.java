@@ -1,6 +1,7 @@
 package br.gov.sp.attornatus.attornatusapi.controller;
- 
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -8,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -44,29 +46,55 @@ public class PessoaControllerTest {
 
 		Mockito.when(pessoaRepository.save(Mockito.any())).thenReturn(pessoa);
 
-		this.mockMvc.perform(post("/pessoas").contentType(MediaType.APPLICATION_JSON).content(
-				"{\"nome\": \"Joao da Silva\",\"dataNascimento\": \"2013-06-09T00:00:00.000+00:00\" }")
+		this.mockMvc.perform(post("/pessoas").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"nome\": \"Joao da Silva\",\"dataNascimento\": \"2013-06-09T00:00:00.000+00:00\" }")
 				.accept(MediaType.APPLICATION_JSON)
 
-		).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.nome").value("Joao da Silva")).andExpect(
-				 content().json("{\r\n"
-						+ "    \"id\": 1,\r\n"
-						+ "    \"nome\": \"Joao da Silva\",\r\n"
-						+ "    \"dataNascimento\": \"2013-06-09T00:00:00.000+00:00\"\r\n"
-						+ "}", true));
+		).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.nome").value("Joao da Silva"))
+				.andExpect(content().json("{\r\n" + "    \"id\": 1,\r\n" + "    \"nome\": \"Joao da Silva\",\r\n"
+						+ "    \"dataNascimento\": \"2013-06-09T00:00:00.000+00:00\"\r\n" + "}", true));
 	}
 
 	@Test
 	void deveRetornarBadRequest_QuandoNaoEnviarPessoaNoCorpoDaRequisicao() throws Exception {
- 
-		this.mockMvc.perform(post("/pessoas").contentType(MediaType.APPLICATION_JSON)
-				.content("")
-				.accept(MediaType.APPLICATION_JSON)
+
+		this.mockMvc.perform(
+				post("/pessoas").contentType(MediaType.APPLICATION_JSON).content("").accept(MediaType.APPLICATION_JSON)
 
 		).andDo(print()).andExpect(status().isBadRequest());
 	}
-	
-	 
 
-	 
+	@Test
+	void deveRetornarOk_QuandoAlterarPessoaComSucesso() throws Exception {
+
+		var pessoa = new Pessoa();
+		pessoa.setId(1L);
+		pessoa.setNome("Alain Prost");
+		Date dataNascimento = Date.from(Instant.parse("1978-02-11T00:00:00.000+00:00"));
+		pessoa.setDataNascimento(dataNascimento);
+
+		Mockito.when(pessoaRepository.save(Mockito.any())).thenReturn(pessoa);
+		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.of(pessoa));
+
+		this.mockMvc.perform(put("/pessoas/1").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"nome\": \"Jean Alesi\",\"dataNascimento\": \"1978-02-11T00:00:00.000+00:00\" }")
+				.accept(MediaType.APPLICATION_JSON)
+
+		).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.nome").value("Jean Alesi"))
+				.andExpect(content().json("{\r\n" + "    \"id\": 1,\r\n" + "    \"nome\": \"Jean Alesi\",\r\n"
+						+ "    \"dataNascimento\": \"1978-02-11T00:00:00.000+00:00\"\r\n" + "}", true));
+	}
+
+	@Test
+	void deveRetornarPessoaNotFound_QuandoEnviarIdNaoExistente() throws Exception {
+
+		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.empty());
+
+		this.mockMvc.perform(put("/pessoas/1").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"nome\": \"Jean Alesi\",\"dataNascimento\": \"1978-02-11T00:00:00.000+00:00\" }")
+				.accept(MediaType.APPLICATION_JSON)
+
+		).andDo(print()).andExpect(status().isNotFound());
+	}
+
 }
