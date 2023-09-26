@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "pessoa")
@@ -17,10 +18,10 @@ public class Pessoa {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "nome")
+	@Column(name = "nome") 
 	private String nome;
 	
-	@Column(name = "data_nascimento")
+	@Column(name = "data_nascimento") 
 	private Date dataNascimento;
 
 	public Long getId() {

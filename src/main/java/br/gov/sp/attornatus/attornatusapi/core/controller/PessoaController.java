@@ -1,15 +1,28 @@
 package br.gov.sp.attornatus.attornatusapi.core.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.gov.sp.attornatus.attornatusapi.core.model.Pessoa;
+import br.gov.sp.attornatus.attornatusapi.core.service.PessoaService;
+
 @RestController
+@RequestMapping("/pessoas")
 public class PessoaController {
 
-	@GetMapping("/oi")
-	public String oi() {
-		return "oi";
+	@Autowired
+	private PessoaService pessoaService;
+ 
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public Pessoa salvar(@RequestBody Pessoa pessoa) {
+		return pessoaService.criarPessoa(pessoa);
+
 	}
-	
-	
+
 }
