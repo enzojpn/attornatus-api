@@ -1,5 +1,6 @@
 package br.gov.sp.attornatus.attornatusapi.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -86,13 +87,40 @@ public class PessoaControllerTest {
 	}
 
 	@Test
-	void deveRetornarPessoaNotFound_QuandoEnviarIdNaoExistente() throws Exception {
+	void deveRetornarPessoaNotFound_QuandoAlterarPessoaComIdNaoExistente() throws Exception {
 
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
 		this.mockMvc.perform(put("/pessoas/1").contentType(MediaType.APPLICATION_JSON)
 				.content("{\"nome\": \"Jean Alesi\",\"dataNascimento\": \"1978-02-11T00:00:00.000+00:00\" }")
 				.accept(MediaType.APPLICATION_JSON)
+
+		).andDo(print()).andExpect(status().isNotFound());
+	}
+
+	@Test
+	void deveRetornarOk_QuandoBuscarPessoaComIdExistente() throws Exception {
+		var pessoa = new Pessoa();
+		pessoa.setId(1L);
+		pessoa.setNome("Claire Wiliams");
+		Date dataNascimento = Date.from(Instant.parse("1958-10-08T00:00:00.000+00:00"));
+		pessoa.setDataNascimento(dataNascimento);
+		
+		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.of(pessoa));
+
+		this.mockMvc.perform(get("/pessoas/1").contentType(MediaType.APPLICATION_JSON) 
+
+		).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.nome").value("Claire Wiliams"))
+		.andExpect(content().json("{\r\n" + "    \"id\": 1,\r\n" + "    \"nome\": \"Claire Wiliams\",\r\n"
+				+ "    \"dataNascimento\": \"1958-10-08T00:00:00.000+00:00\"\r\n" + "}", true));
+	}
+
+	@Test
+	void deveRetornarPessoaNotFound_QuandoBuscarPessoaComIdNaoExistente() throws Exception {
+
+		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.empty());
+
+		this.mockMvc.perform(get("/pessoas/1").contentType(MediaType.APPLICATION_JSON) 
 
 		).andDo(print()).andExpect(status().isNotFound());
 	}
