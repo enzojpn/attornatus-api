@@ -1,5 +1,7 @@
 package br.gov.sp.attornatus.attornatusapi.core.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,10 @@ public class PessoaService {
 	return	pessoaRepository.findById(pessoaId)
 			.orElseThrow(() -> new PessoaNaoEncontradoException(pessoaId));
  
+	}
+
+	public List<Pessoa> listar() {
+		return pessoaRepository.findAll();
 	}
 
 }

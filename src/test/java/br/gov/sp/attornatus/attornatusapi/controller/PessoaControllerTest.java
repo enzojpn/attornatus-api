@@ -9,9 +9,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,6 +126,48 @@ public class PessoaControllerTest {
 		this.mockMvc.perform(get("/pessoas/1").contentType(MediaType.APPLICATION_JSON) 
 
 		).andDo(print()).andExpect(status().isNotFound());
+	}
+
+	@Test
+	void deveRetornarOk_QuandoListarPessoas() throws Exception {
+
+		List<Pessoa> pessoas = new ArrayList<Pessoa>();
+		var pessoa1 = new Pessoa();
+		var pessoa2 = new Pessoa();
+		var pessoa3 = new Pessoa();
+
+		pessoa1.setId(1L);
+		pessoa2.setId(2L);
+		pessoa3.setId(3L);
+		 
+		pessoa1.setNome("Nuno");
+		pessoa2.setNome("Alice");
+		pessoa3.setNome("Yuri");
+
+		Date dataNascimento = Date.from(Instant.parse("1958-10-08T00:00:00.000+00:00"));
+		pessoa1.setDataNascimento(dataNascimento);
+		pessoa2.setDataNascimento(dataNascimento);
+		pessoa3.setDataNascimento(dataNascimento);
+		
+		pessoas.add(pessoa1);
+		pessoas.add(pessoa2);
+		pessoas.add(pessoa3);
+
+		Mockito.when(pessoaRepository.findAll()).thenReturn(pessoas);
+
+		this.mockMvc.perform(get("/pessoas").contentType(MediaType.APPLICATION_JSON) 
+
+		).andDo(print()).andExpect(status().isOk())
+        .andExpect(jsonPath("$", Matchers.hasSize(3)))  
+        .andExpect(jsonPath("$[0].id").value(1))  
+        .andExpect(jsonPath("$[0].nome").value("Nuno"))  
+        .andExpect(jsonPath("$[0].dataNascimento").value("1958-10-08T00:00:00.000+00:00")) 
+        .andExpect(jsonPath("$[1].id").value(2))  
+        .andExpect(jsonPath("$[1].nome").value("Alice"))  
+        .andExpect(jsonPath("$[1].dataNascimento").value("1958-10-08T00:00:00.000+00:00"))
+		.andExpect(jsonPath("$[2].id").value(3))  
+        .andExpect(jsonPath("$[2].nome").value("Yuri"))  
+        .andExpect(jsonPath("$[2].dataNascimento").value("1958-10-08T00:00:00.000+00:00"));
 	}
 
 }

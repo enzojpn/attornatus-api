@@ -1,5 +1,7 @@
 package br.gov.sp.attornatus.attornatusapi.core.controller;
 
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,4 +45,11 @@ public class PessoaController {
 	public Pessoa buscar(@PathVariable Long pessoaId) {
 		return pessoaService.buscarOuFalhar(pessoaId);
 	}
+	
+	@GetMapping()
+	public List<Pessoa> listar(){
+		return pessoaService.listar();
+	}
+
+	
 }

@@ -1,7 +1,9 @@
 package br.gov.sp.attornatus.attornatusapi.service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
@@ -48,13 +50,12 @@ public class PessoaServiceTest {
 	@Test
 	void deveBuscarPessoa_QuandoEnviarId() throws Exception {
 
-
 		var pessoa = new Pessoa();
 		pessoa.setId(1L);
 		pessoa.setNome("Felipe Massa");
 		Date dataNascimento = Date.from(Instant.parse("1988-01-19T00:00:00.000+00:00"));
-		pessoa.setDataNascimento(dataNascimento); 
-		
+		pessoa.setDataNascimento(dataNascimento);
+
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.of(pessoa));
 
 		var pessoaRetornada = pessoaService.buscarOuFalhar(1L);
@@ -62,8 +63,9 @@ public class PessoaServiceTest {
 		Assertions.assertEquals(dataNascimento, pessoaRetornada.getDataNascimento());
 
 	}
+
 	@Test
-	void deveFalhar_BuscarPessoaInexistente() throws Exception {
+	void deveFalhar_QuandoBuscarPessoaInexistente() throws Exception {
 
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 		Assertions.assertThrows(PessoaNaoEncontradoException.class, () -> {
@@ -71,5 +73,23 @@ public class PessoaServiceTest {
 		});
 
 	}
+
+	@Test
+	void deveListarPessoas_QuandoListarPessoas() throws Exception {
+
+		List<Pessoa> pessoas = new ArrayList<Pessoa>();
+		pessoas.add(new Pessoa());
+		pessoas.add(new Pessoa());
+		pessoas.add(new Pessoa());
+
+		Mockito.when(pessoaRepository.findAll()).thenReturn(pessoas);
+		List<Pessoa> pessoasListadas = pessoaService.listar();
+
+		Assertions.assertEquals(3, pessoasListadas.size());
+		Assertions.assertNotNull(pessoasListadas);
+		Assertions.assertEquals(pessoas, pessoasListadas);
+	}
+	
+ 
 
 }
