@@ -1,5 +1,6 @@
 package br.gov.sp.attornatus.attornatusapi.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -7,7 +8,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -78,7 +81,8 @@ public class EnderecoControllerTest {
 						+ "    \"pessoa\": {\r\n"
 						+ "        \"id\": 1,\r\n"
 						+ "        \"nome\": \"Nigel Mansell\",\r\n"
-						+ "        \"dataNascimento\": \"2013-06-09T00:00:00.000+00:00\"\r\n"
+						+ "        \"dataNascimento\": \"2013-06-09T00:00:00.000+00:00\",\r\n"
+						+ "			\"enderecoPrincipalId\":null"
 						+ "    },\r\n"
 						+ "    \"logradouro\": \"rua de teste\",\r\n"
 						+ "    \"cep\": \"02040033\",\r\n"
@@ -96,6 +100,42 @@ public class EnderecoControllerTest {
 		).andDo(print()).andExpect(status().isBadRequest());
 	}
  
- 
+	
+	@Test
+	void deveRetornarEnderecos_QuandoEnviarEnderecoPorPessoaId() throws Exception {
+
+		var pessoa = new Pessoa();
+		pessoa.setId(1L);
+		pessoa.setNome("Nigel Mansell");
+
+		Date dataNascimento = Date.from(Instant.parse("2013-06-09T00:00:00.000+00:00"));
+		pessoa.setDataNascimento(dataNascimento);
+  
+		var endereco = new Endereco();
+		endereco.setId(1L);
+		endereco.setCep("02040033");
+		endereco.setCidade("curitiba");
+		endereco.setLogradouro("rua de teste");
+		endereco.setNumero("22");
+		endereco.setPessoa(pessoa);
+
+		List<Endereco> enderecos = new ArrayList<Endereco>();
+		enderecos.add(endereco);
+		
+		Mockito.when(enderecoRepository.findEnderecoByPessoaId(Mockito.any())).thenReturn(enderecos);
+		 
+		this.mockMvc.perform(get("/enderecos/por-pessoa-id/1").accept(MediaType.APPLICATION_JSON)
+
+		).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$[0].pessoa.id").value("1")).andExpect(jsonPath("$[0].pessoa.id").value("1"))
+		.andExpect(jsonPath("$[0].pessoa.nome").value("Nigel Mansell"))
+		.andExpect(jsonPath("$[0].pessoa.dataNascimento").value("2013-06-09T00:00:00.000+00:00"))
+		.andExpect(jsonPath("$[0].logradouro").value("rua de teste"))
+		.andExpect(jsonPath("$[0].cep").value("02040033"))
+		.andExpect(jsonPath("$[0].numero").value("22"))
+		.andExpect(jsonPath("$[0].cidade").value("curitiba"));
+	}
+
+	
+	
 
 }

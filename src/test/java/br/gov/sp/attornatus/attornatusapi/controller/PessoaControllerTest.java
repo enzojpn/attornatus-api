@@ -113,7 +113,7 @@ public class PessoaControllerTest {
 
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.of(pessoa));
 
-		this.mockMvc.perform(get("/pessoas/1").contentType(MediaType.APPLICATION_JSON)
+		this.mockMvc.perform(get("/pessoas/1").accept(MediaType.APPLICATION_JSON)
 
 		).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.nome").value("Claire Wiliams"))
 				.andExpect(content().json("{\r\n" + "    \"id\": 1,\r\n" + "    \"nome\": \"Claire Wiliams\",\r\n"
@@ -126,7 +126,7 @@ public class PessoaControllerTest {
 
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
-		this.mockMvc.perform(get("/pessoas/1").contentType(MediaType.APPLICATION_JSON)
+		this.mockMvc.perform(get("/pessoas/1").accept(MediaType.APPLICATION_JSON)
 
 		).andDo(print()).andExpect(status().isNotFound());
 	}
@@ -158,7 +158,7 @@ public class PessoaControllerTest {
 
 		Mockito.when(pessoaRepository.findAll()).thenReturn(pessoas);
 
-		this.mockMvc.perform(get("/pessoas").contentType(MediaType.APPLICATION_JSON)
+		this.mockMvc.perform(get("/pessoas").accept(MediaType.APPLICATION_JSON)
 
 		).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$", Matchers.hasSize(3)))
 				.andExpect(jsonPath("$[0].id").value(1)).andExpect(jsonPath("$[0].nome").value("Nuno"))
