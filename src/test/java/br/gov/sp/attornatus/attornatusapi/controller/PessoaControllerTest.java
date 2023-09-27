@@ -56,7 +56,8 @@ public class PessoaControllerTest {
 
 		).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.nome").value("Joao da Silva"))
 				.andExpect(content().json("{\r\n" + "    \"id\": 1,\r\n" + "    \"nome\": \"Joao da Silva\",\r\n"
-						+ "    \"dataNascimento\": \"2013-06-09T00:00:00.000+00:00\"\r\n" + "}", true));
+						+ "    \"dataNascimento\": \"2013-06-09T00:00:00.000+00:00\"\r\n"
+						+ ",\"enderecoPrincipalId\":null}", true));
 	}
 
 	@Test
@@ -86,7 +87,8 @@ public class PessoaControllerTest {
 
 		).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.nome").value("Jean Alesi"))
 				.andExpect(content().json("{\r\n" + "    \"id\": 1,\r\n" + "    \"nome\": \"Jean Alesi\",\r\n"
-						+ "    \"dataNascimento\": \"1978-02-11T00:00:00.000+00:00\"\r\n" + "}", true));
+						+ "    \"dataNascimento\": \"1978-02-11T00:00:00.000+00:00\"\r\n"
+						+ ",\"enderecoPrincipalId\":null}", true));
 	}
 
 	@Test
@@ -108,14 +110,15 @@ public class PessoaControllerTest {
 		pessoa.setNome("Claire Wiliams");
 		Date dataNascimento = Date.from(Instant.parse("1958-10-08T00:00:00.000+00:00"));
 		pessoa.setDataNascimento(dataNascimento);
-		
+
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.of(pessoa));
 
-		this.mockMvc.perform(get("/pessoas/1").contentType(MediaType.APPLICATION_JSON) 
+		this.mockMvc.perform(get("/pessoas/1").contentType(MediaType.APPLICATION_JSON)
 
 		).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.nome").value("Claire Wiliams"))
-		.andExpect(content().json("{\r\n" + "    \"id\": 1,\r\n" + "    \"nome\": \"Claire Wiliams\",\r\n"
-				+ "    \"dataNascimento\": \"1958-10-08T00:00:00.000+00:00\"\r\n" + "}", true));
+				.andExpect(content().json("{\r\n" + "    \"id\": 1,\r\n" + "    \"nome\": \"Claire Wiliams\",\r\n"
+						+ "    \"dataNascimento\": \"1958-10-08T00:00:00.000+00:00\"\r\n"
+						+ ",\"enderecoPrincipalId\":null}", true));
 	}
 
 	@Test
@@ -123,7 +126,7 @@ public class PessoaControllerTest {
 
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
-		this.mockMvc.perform(get("/pessoas/1").contentType(MediaType.APPLICATION_JSON) 
+		this.mockMvc.perform(get("/pessoas/1").contentType(MediaType.APPLICATION_JSON)
 
 		).andDo(print()).andExpect(status().isNotFound());
 	}
@@ -139,7 +142,7 @@ public class PessoaControllerTest {
 		pessoa1.setId(1L);
 		pessoa2.setId(2L);
 		pessoa3.setId(3L);
-		 
+
 		pessoa1.setNome("Nuno");
 		pessoa2.setNome("Alice");
 		pessoa3.setNome("Yuri");
@@ -148,26 +151,46 @@ public class PessoaControllerTest {
 		pessoa1.setDataNascimento(dataNascimento);
 		pessoa2.setDataNascimento(dataNascimento);
 		pessoa3.setDataNascimento(dataNascimento);
-		
+
 		pessoas.add(pessoa1);
 		pessoas.add(pessoa2);
 		pessoas.add(pessoa3);
 
 		Mockito.when(pessoaRepository.findAll()).thenReturn(pessoas);
 
-		this.mockMvc.perform(get("/pessoas").contentType(MediaType.APPLICATION_JSON) 
+		this.mockMvc.perform(get("/pessoas").contentType(MediaType.APPLICATION_JSON)
 
-		).andDo(print()).andExpect(status().isOk())
-        .andExpect(jsonPath("$", Matchers.hasSize(3)))  
-        .andExpect(jsonPath("$[0].id").value(1))  
-        .andExpect(jsonPath("$[0].nome").value("Nuno"))  
-        .andExpect(jsonPath("$[0].dataNascimento").value("1958-10-08T00:00:00.000+00:00")) 
-        .andExpect(jsonPath("$[1].id").value(2))  
-        .andExpect(jsonPath("$[1].nome").value("Alice"))  
-        .andExpect(jsonPath("$[1].dataNascimento").value("1958-10-08T00:00:00.000+00:00"))
-		.andExpect(jsonPath("$[2].id").value(3))  
-        .andExpect(jsonPath("$[2].nome").value("Yuri"))  
-        .andExpect(jsonPath("$[2].dataNascimento").value("1958-10-08T00:00:00.000+00:00"));
+		).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$", Matchers.hasSize(3)))
+				.andExpect(jsonPath("$[0].id").value(1)).andExpect(jsonPath("$[0].nome").value("Nuno"))
+				.andExpect(jsonPath("$[0].dataNascimento").value("1958-10-08T00:00:00.000+00:00"))
+				.andExpect(jsonPath("$[1].id").value(2)).andExpect(jsonPath("$[1].nome").value("Alice"))
+				.andExpect(jsonPath("$[1].dataNascimento").value("1958-10-08T00:00:00.000+00:00"))
+				.andExpect(jsonPath("$[2].id").value(3)).andExpect(jsonPath("$[2].nome").value("Yuri"))
+				.andExpect(jsonPath("$[2].dataNascimento").value("1958-10-08T00:00:00.000+00:00"));
+	}
+
+	@Test
+	void deveRetornarNotFound_QuandoAlterarEnderecoPrincipalDePessoaInexistente() throws Exception {
+
+		this.mockMvc.perform(put("/pessoas/1/endereco/2/principal").contentType(MediaType.APPLICATION_JSON)
+
+		).andDo(print()).andExpect(status().isNotFound());
+	}
+
+	@Test
+	void deveRetornarOk_QuandoAlterarEnderecoPrincipal() throws Exception {
+
+		var pessoa = new Pessoa();
+		pessoa.setId(1L);
+		pessoa.setNome("Claire Wiliams");
+		Date dataNascimento = Date.from(Instant.parse("1958-10-08T00:00:00.000+00:00"));
+		pessoa.setDataNascimento(dataNascimento);
+
+		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.of(pessoa));
+		
+		this.mockMvc.perform(put("/pessoas/1/endereco/2/principal").contentType(MediaType.APPLICATION_JSON)
+
+		).andDo(print()).andExpect(status().isOk());
 	}
 
 }
