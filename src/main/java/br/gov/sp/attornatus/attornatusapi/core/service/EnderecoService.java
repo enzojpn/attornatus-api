@@ -1,5 +1,6 @@
 package br.gov.sp.attornatus.attornatusapi.core.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,18 @@ public class EnderecoService {
 			throw new PessoaNaoEncontradoException(pessoaId);
 		}
 		return enderecoRepository.save(endereco);
+	}
+
+	public List<Endereco> listarEnderecos() {
+
+		return enderecoRepository.findAll();
+
+	} 
+
+	public List<Endereco> listarEnderecosPorIdPessoa(Long pessoaId) {
+
+		return enderecoRepository.findEnderecoByPessoaId(pessoaId);
+
 	}
 
 }

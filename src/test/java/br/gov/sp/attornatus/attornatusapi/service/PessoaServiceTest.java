@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import br.gov.sp.attornatus.attornatusapi.core.exception.PessoaNaoEncontradoException;
+import br.gov.sp.attornatus.attornatusapi.core.model.Endereco;
 import br.gov.sp.attornatus.attornatusapi.core.model.Pessoa;
 import br.gov.sp.attornatus.attornatusapi.core.repository.PessoaRepository;
 import br.gov.sp.attornatus.attornatusapi.core.service.PessoaService;
@@ -89,7 +90,43 @@ public class PessoaServiceTest {
 		Assertions.assertNotNull(pessoasListadas);
 		Assertions.assertEquals(pessoas, pessoasListadas);
 	}
-	
+
+	@Test
+	void deveListarEndereco_QuandoListarEnderecoPorPessoaId() throws Exception {
+
+		var pessoa = new Pessoa();
+		pessoa.setId(1L);
+		pessoa.setNome("Brian Herta");
+		Date dataNascimento = Date.from(Instant.parse("1978-07-11T00:00:00.000+00:00"));
+		pessoa.setDataNascimento(dataNascimento);
+
+		var endereco = new Endereco();
+		endereco.setId(1L);
+		endereco.setCep("02040033");
+		endereco.setCidade("curitiba");
+		endereco.setLogradouro("rua de teste");
+		endereco.setNumero("22");
+		endereco.setPessoa(pessoa);
+
+		var endereco2 = new Endereco();
+		endereco2.setId(2L);
+		endereco2.setCep("02233400");
+		endereco2.setCidade("curitiba");
+		endereco2.setLogradouro("avenida de teste");
+		endereco2.setNumero("11");
+		endereco2.setPessoa(pessoa);
+
+		List<Endereco> enderecos = new ArrayList<Endereco>();
+		enderecos.add(endereco);
+		enderecos.add(endereco2);
+		Mockito.when(pessoaRepository.findEnderecosByPessoaId(Mockito.any())).thenReturn(enderecos);
+
+		List<Endereco> enderecosRetornados = pessoaService.buscarEnderecosPorIdPessoa(pessoa.getId());
  
+		Assertions.assertEquals(2, enderecosRetornados.size());
+		Assertions.assertNotNull(enderecosRetornados);
+		Assertions.assertEquals(enderecos, enderecosRetornados);
+		
+	}
 
 }

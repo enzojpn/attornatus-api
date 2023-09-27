@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.gov.sp.attornatus.attornatusapi.core.model.Endereco;
 import br.gov.sp.attornatus.attornatusapi.core.model.Pessoa;
 import br.gov.sp.attornatus.attornatusapi.core.service.PessoaService;
 
@@ -45,10 +46,16 @@ public class PessoaController {
 	public Pessoa buscar(@PathVariable Long pessoaId) {
 		return pessoaService.buscarOuFalhar(pessoaId);
 	}
-	
+
 	@GetMapping()
 	public List<Pessoa> listar(){
 		return pessoaService.listar();
+	}
+
+
+	@GetMapping("/enderecos/{pessoaId}")
+	public List<Endereco> listarEnderecosDaPessoa(@PathVariable Long pessoaId){
+		return pessoaService.buscarEnderecosPorIdPessoa(pessoaId);
 	}
 
 	

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.gov.sp.attornatus.attornatusapi.core.exception.PessoaNaoEncontradoException;
+import br.gov.sp.attornatus.attornatusapi.core.model.Endereco;
 import br.gov.sp.attornatus.attornatusapi.core.model.Pessoa;
 import br.gov.sp.attornatus.attornatusapi.core.repository.PessoaRepository;
 
@@ -21,13 +22,16 @@ public class PessoaService {
 
 	public Pessoa buscarOuFalhar(Long pessoaId) {
 
-	return	pessoaRepository.findById(pessoaId)
-			.orElseThrow(() -> new PessoaNaoEncontradoException(pessoaId));
- 
+		return pessoaRepository.findById(pessoaId).orElseThrow(() -> new PessoaNaoEncontradoException(pessoaId));
+
 	}
 
 	public List<Pessoa> listar() {
 		return pessoaRepository.findAll();
+	}
+
+	public List<Endereco> buscarEnderecosPorIdPessoa(Long pessoaId) {
+		return pessoaRepository.findEnderecosByPessoaId(pessoaId);
 	}
 
 }

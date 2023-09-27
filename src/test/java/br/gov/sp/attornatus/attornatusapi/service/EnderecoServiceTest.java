@@ -1,7 +1,9 @@
 package br.gov.sp.attornatus.attornatusapi.service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
@@ -111,6 +113,43 @@ public class EnderecoServiceTest {
 			 enderecoService.criarEndereco(endereco);
 		});
 
+	}
+
+	@Test
+	void deveRetornarEstados_QuandoEnviarPessoaId() throws Exception {
+		var pessoa = new Pessoa();
+		pessoa.setId(1L);
+		pessoa.setNome("Celio Santos");
+		Date dataNascimento = Date.from(Instant.parse("2011-11-11T00:00:00.000+00:00"));
+		pessoa.setDataNascimento(dataNascimento);
+
+		var endereco = new Endereco();
+		endereco.setId(1L);
+		endereco.setCep("02040033");
+		endereco.setCidade("curitiba");
+		endereco.setLogradouro("rua de teste");
+		endereco.setNumero("22");
+		endereco.setPessoa(pessoa);
+
+		var endereco2 = new Endereco();
+		endereco2.setId(2L);
+		endereco2.setCep("02233400");
+		endereco2.setCidade("curitiba");
+		endereco2.setLogradouro("avenida de teste");
+		endereco2.setNumero("11");
+		endereco2.setPessoa(pessoa);
+
+		List<Endereco> enderecos = new ArrayList<Endereco>();
+		enderecos.add(endereco);
+		enderecos.add(endereco2);
+		Mockito.when(enderecoService.listarEnderecosPorIdPessoa(Mockito.any())).thenReturn(enderecos);
+
+		List<Endereco> enderecosRetornados = enderecoService.listarEnderecosPorIdPessoa(pessoa.getId());
+		 
+		Assertions.assertEquals(2, enderecosRetornados.size());
+		Assertions.assertNotNull(enderecosRetornados);
+		Assertions.assertEquals(enderecos, enderecosRetornados);
+		
 	}
 
 }
