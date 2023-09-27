@@ -53,10 +53,19 @@ public class PessoaController {
 	}
 
 
-	@GetMapping("/enderecos/{pessoaId}")
+	@GetMapping("/{pessoaId}/enderecos")
 	public List<Endereco> listarEnderecosDaPessoa(@PathVariable Long pessoaId){
 		return pessoaService.buscarEnderecosPorIdPessoa(pessoaId);
 	}
 
+	@PutMapping("/{pessoaId}/endereco/{enderecoId}/principal")  
+	public void enderecoPrincipal(@PathVariable Long pessoaId, @PathVariable Long enderecoId) {
+		pessoaService.setEnderecoPrincipal(pessoaId ,enderecoId);
+	}
 	
+
+	@GetMapping("/{pessoaId}/endereco-principal")
+	public Endereco buscarEnderecoPrincipal(@PathVariable Long pessoaId){
+		return pessoaService.buscarEnderecosEnderecoPrincipal(pessoaId);
+	}
 }

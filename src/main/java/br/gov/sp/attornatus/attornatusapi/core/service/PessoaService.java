@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.gov.sp.attornatus.attornatusapi.core.exception.PessoaNaoEncontradoException;
 import br.gov.sp.attornatus.attornatusapi.core.model.Endereco;
@@ -32,6 +33,16 @@ public class PessoaService {
 
 	public List<Endereco> buscarEnderecosPorIdPessoa(Long pessoaId) {
 		return pessoaRepository.findEnderecosByPessoaId(pessoaId);
+	}
+ 
+    @Transactional
+	public void setEnderecoPrincipal(Long pessoaId, Long restauranteId) {
+    	Pessoa pessoa = buscarOuFalhar(pessoaId);
+    	pessoa.setEnderecoPrincipalId(restauranteId);
+	}
+
+	public Endereco buscarEnderecosEnderecoPrincipal(Long pessoaId) {
+		return pessoaRepository.findEnderecoPrincipalByPessoaId(pessoaId);
 	}
 
 }

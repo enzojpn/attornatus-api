@@ -122,11 +122,48 @@ public class PessoaServiceTest {
 		Mockito.when(pessoaRepository.findEnderecosByPessoaId(Mockito.any())).thenReturn(enderecos);
 
 		List<Endereco> enderecosRetornados = pessoaService.buscarEnderecosPorIdPessoa(pessoa.getId());
- 
+
 		Assertions.assertEquals(2, enderecosRetornados.size());
 		Assertions.assertNotNull(enderecosRetornados);
 		Assertions.assertEquals(enderecos, enderecosRetornados);
+
+	}
+
+	@Test
+	void deveAlterarIdEnderecoPrincipal_QuandoAlterarEnderecoPrincipal() throws Exception {
+		var pessoa = new Pessoa();
+		pessoa.setId(1L);
+		pessoa.setNome("Ana Paula");
+		Date dataNascimento = Date.from(Instant.parse("1978-07-11T00:00:00.000+00:00"));
+		pessoa.setDataNascimento(dataNascimento);
+
+		var endereco = new Endereco();
+		endereco.setId(1L);
+		endereco.setCep("02040033");
+		endereco.setCidade("curitiba");
+		endereco.setLogradouro("rua de teste");
+		endereco.setNumero("22");
+		endereco.setPessoa(pessoa);
+
+		pessoa.setEnderecoPrincipalId(endereco.getId());
+
+		var endereco2 = new Endereco();
+		endereco2.setId(2L);
+		endereco2.setCep("02233400");
+		endereco2.setCidade("curitiba");
+		endereco2.setLogradouro("avenida de teste");
+		endereco2.setNumero("11");
+		endereco2.setPessoa(pessoa);
+
+		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.of( pessoa));
+		Mockito.when(pessoaRepository.findEnderecoPrincipalByPessoaId(Mockito.any())).thenReturn(endereco2);
+		pessoaService.setEnderecoPrincipal(pessoa.getId(), endereco2.getId());
+
+		Endereco enderecoPrincipalAtualizado = pessoaService.buscarEnderecosEnderecoPrincipal(pessoa.getId());
 		
+		Assertions.assertNotNull(enderecoPrincipalAtualizado);
+		Assertions.assertEquals(2, enderecoPrincipalAtualizado.getId());
+
 	}
 
 }

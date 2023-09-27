@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "pessoa")
 public class Pessoa {
@@ -27,6 +29,10 @@ public class Pessoa {
 	@Column(name = "data_nascimento")
 	private Date dataNascimento;
 
+	@Column(name = "endereco_principal_id")
+	private Long enderecoPrincipalId;
+
+	@JsonIgnore
 	@OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Endereco> endereco;
 
@@ -52,6 +58,22 @@ public class Pessoa {
 
 	public void setDataNascimento(Date dataNascimento) {
 		this.dataNascimento = dataNascimento;
+	}
+
+	public Long getEnderecoPrincipalId() {
+		return enderecoPrincipalId;
+	}
+
+	public void setEnderecoPrincipalId(Long enderecoPrincipalId) {
+		this.enderecoPrincipalId = enderecoPrincipalId;
+	}
+
+	public List<Endereco> getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(List<Endereco> endereco) {
+		this.endereco = endereco;
 	}
 
 }
