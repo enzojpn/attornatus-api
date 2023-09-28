@@ -1,12 +1,13 @@
 package br.gov.sp.attornatus.attornatusapi.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import org.junit.jupiter.api.Assertions;
+ 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,12 +58,12 @@ public class EnderecoServiceTest {
 
 		var enderecoCriado = enderecoService.criarEndereco(endereco);
 
-		Assertions.assertEquals("Silvio Santos", enderecoCriado.getPessoa().getNome());
-		Assertions.assertEquals(dataNascimento, enderecoCriado.getPessoa().getDataNascimento());
-		Assertions.assertEquals("02040033", enderecoCriado.getCep());
-		Assertions.assertEquals("curitiba", enderecoCriado.getCidade());
-		Assertions.assertEquals("22", enderecoCriado.getNumero());
-		Assertions.assertEquals("rua de teste", enderecoCriado.getLogradouro());
+		assertEquals("Silvio Santos", enderecoCriado.getPessoa().getNome());
+		assertEquals(dataNascimento, enderecoCriado.getPessoa().getDataNascimento());
+		assertEquals("02040033", enderecoCriado.getCep());
+		assertEquals("curitiba", enderecoCriado.getCidade());
+		assertEquals("22", enderecoCriado.getNumero());
+		assertEquals("rua de teste", enderecoCriado.getLogradouro());
 
 	}
 
@@ -79,10 +80,7 @@ public class EnderecoServiceTest {
 		Mockito.when(enderecoRepository.save(Mockito.any())).thenReturn(endereco);
 
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.empty());
-
-
-		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.empty());
-		Assertions.assertThrows(PessoaNaoEncontradoException.class, () -> {
+		assertThrows(PessoaNaoEncontradoException.class, () -> {
 			 enderecoService.criarEndereco(endereco);
 		});
 
@@ -109,7 +107,7 @@ public class EnderecoServiceTest {
 
 
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.empty());
-		Assertions.assertThrows(PessoaNaoEncontradoException.class, () -> {
+		assertThrows(PessoaNaoEncontradoException.class, () -> {
 			 enderecoService.criarEndereco(endereco);
 		});
 
@@ -146,9 +144,9 @@ public class EnderecoServiceTest {
 
 		List<Endereco> enderecosRetornados = enderecoService.listarEnderecosPorIdPessoa(pessoa.getId());
 		 
-		Assertions.assertEquals(2, enderecosRetornados.size());
-		Assertions.assertNotNull(enderecosRetornados);
-		Assertions.assertEquals(enderecos, enderecosRetornados);
+		assertEquals(2, enderecosRetornados.size());
+		assertNotNull(enderecosRetornados);
+		assertEquals(enderecos, enderecosRetornados);
 		
 	}
 

@@ -1,5 +1,6 @@
 package br.gov.sp.attornatus.attornatusapi.controller;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -24,6 +25,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import br.gov.sp.attornatus.attornatusapi.core.model.Endereco;
 import br.gov.sp.attornatus.attornatusapi.core.model.Pessoa;
 import br.gov.sp.attornatus.attornatusapi.core.repository.PessoaRepository;
 
@@ -192,5 +194,87 @@ public class PessoaControllerTest {
 
 		).andDo(print()).andExpect(status().isOk());
 	}
+	
+	@Test
+	void deveRetornarOk_QuandoListarEnderecosDaPessoa() throws Exception {
 
+		var pessoa = new Pessoa();
+		pessoa.setId(1L);
+		pessoa.setNome("Nigel Mansell");
+
+		Date dataNascimento = Date.from(Instant.parse("2013-06-09T00:00:00.000+00:00"));
+		pessoa.setDataNascimento(dataNascimento);
+
+		var endereco = new Endereco();
+		endereco.setId(1L);
+		endereco.setCep("02040033");
+		endereco.setCidade("curitiba");
+		endereco.setLogradouro("rua de teste");
+		endereco.setNumero("22");
+		endereco.setPessoa(pessoa);
+
+		var endereco2 = new Endereco();
+		endereco2.setId(2L);
+		endereco2.setCep("8602022444");
+		endereco2.setCidade("londrina");
+		endereco2.setLogradouro("avenida maringa");
+		endereco2.setNumero("224");
+		endereco2.setPessoa(pessoa);
+
+		List<Endereco> enderecos = new ArrayList<Endereco>();
+		enderecos.add(endereco);
+		enderecos.add(endereco2);
+
+		Mockito.when(pessoaRepository.findEnderecosByPessoaId(1L)).thenReturn(enderecos);
+
+		 this.mockMvc.perform(
+				get("/pessoas/1/enderecos").accept(MediaType.APPLICATION_JSON)
+
+		).andDo(print()).andExpect(status().isOk())	
+	   .andExpect(jsonPath("$.length()", is(2)))
+		.andExpect(jsonPath("$[0].pessoa.id").value("1"))
+		.andExpect(jsonPath("$[0].pessoa.nome").value("Nigel Mansell"))
+		.andExpect(jsonPath("$[0].pessoa.dataNascimento").value("2013-06-09T00:00:00.000+00:00"))
+		.andExpect(jsonPath("$[0].logradouro").value("rua de teste"))
+		.andExpect(jsonPath("$[0].cep").value("02040033")).andExpect(jsonPath("$[0].numero").value("22"))
+		.andExpect(jsonPath("$[0].cidade").value("curitiba"));
+		
+	 
+	}
+	
+	@Test
+	void deveRetornarOk_QuandoListarEnderecosPrincipalDaPessoa() throws Exception {
+
+		var pessoa = new Pessoa();
+		pessoa.setId(1L);
+		pessoa.setNome("Nigel Mansell");
+		Date dataNascimento = Date.from(Instant.parse("2013-06-09T00:00:00.000+00:00"));
+		pessoa.setDataNascimento(dataNascimento);
+ 
+		var enderecoPrincipal = new Endereco();
+		enderecoPrincipal.setId(2L);
+		enderecoPrincipal.setCep("8602222444");
+		enderecoPrincipal.setCidade("londrina");
+		enderecoPrincipal.setLogradouro("avenida maringa");
+		enderecoPrincipal.setNumero("224");
+		enderecoPrincipal.setPessoa(pessoa);
+
+		pessoa.setEnderecoPrincipalId(2L);
+		 
+		Mockito.when(pessoaRepository.findEnderecoPrincipalByPessoaId(1L)).thenReturn(enderecoPrincipal);
+
+		 this.mockMvc.perform(
+				get("/pessoas/1/endereco-principal").accept(MediaType.APPLICATION_JSON)
+
+		).andDo(print()).andExpect(status().isOk())	
+		.andExpect(jsonPath("$.pessoa.id").value("1"))
+		.andExpect(jsonPath("$.pessoa.nome").value("Nigel Mansell"))
+		.andExpect(jsonPath("$.pessoa.dataNascimento").value("2013-06-09T00:00:00.000+00:00"))
+		.andExpect(jsonPath("$.logradouro").value("avenida maringa"))
+		.andExpect(jsonPath("$.cep").value("8602222444")).
+		andExpect(jsonPath("$.numero").value("224"))
+		.andExpect(jsonPath("$.cidade").value("londrina"));
+		
+	 
+	}
 }

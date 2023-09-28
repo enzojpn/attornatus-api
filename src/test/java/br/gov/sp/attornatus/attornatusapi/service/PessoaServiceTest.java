@@ -1,12 +1,13 @@
 package br.gov.sp.attornatus.attornatusapi.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import org.junit.jupiter.api.Assertions;
+ 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +44,8 @@ public class PessoaServiceTest {
 
 		var pessoaCriada = pessoaService.criarPessoa(pessoa);
 
-		Assertions.assertEquals("Maria Santos", pessoaCriada.getNome());
-		Assertions.assertEquals(dataNascimento, pessoaCriada.getDataNascimento());
+		assertEquals("Maria Santos", pessoaCriada.getNome());
+		assertEquals(dataNascimento, pessoaCriada.getDataNascimento());
 
 	}
 
@@ -60,8 +61,8 @@ public class PessoaServiceTest {
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.of(pessoa));
 
 		var pessoaRetornada = pessoaService.buscarOuFalhar(1L);
-		Assertions.assertEquals("Felipe Massa", pessoaRetornada.getNome());
-		Assertions.assertEquals(dataNascimento, pessoaRetornada.getDataNascimento());
+		assertEquals("Felipe Massa", pessoaRetornada.getNome());
+		assertEquals(dataNascimento, pessoaRetornada.getDataNascimento());
 
 	}
 
@@ -69,7 +70,7 @@ public class PessoaServiceTest {
 	void deveFalhar_QuandoBuscarPessoaInexistente() throws Exception {
 
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.empty());
-		Assertions.assertThrows(PessoaNaoEncontradoException.class, () -> {
+		assertThrows(PessoaNaoEncontradoException.class, () -> {
 			pessoaService.buscarOuFalhar(333L);
 		});
 
@@ -86,9 +87,9 @@ public class PessoaServiceTest {
 		Mockito.when(pessoaRepository.findAll()).thenReturn(pessoas);
 		List<Pessoa> pessoasListadas = pessoaService.listar();
 
-		Assertions.assertEquals(3, pessoasListadas.size());
-		Assertions.assertNotNull(pessoasListadas);
-		Assertions.assertEquals(pessoas, pessoasListadas);
+		assertEquals(3, pessoasListadas.size());
+		assertNotNull(pessoasListadas);
+		assertEquals(pessoas, pessoasListadas);
 	}
 
 	@Test
@@ -123,9 +124,9 @@ public class PessoaServiceTest {
 
 		List<Endereco> enderecosRetornados = pessoaService.buscarEnderecosPorIdPessoa(pessoa.getId());
 
-		Assertions.assertEquals(2, enderecosRetornados.size());
-		Assertions.assertNotNull(enderecosRetornados);
-		Assertions.assertEquals(enderecos, enderecosRetornados);
+		assertEquals(2, enderecosRetornados.size());
+		assertNotNull(enderecosRetornados);
+		assertEquals(enderecos, enderecosRetornados);
 
 	}
 
@@ -161,8 +162,35 @@ public class PessoaServiceTest {
 
 		Endereco enderecoPrincipalAtualizado = pessoaService.buscarEnderecosEnderecoPrincipal(pessoa.getId());
 		
-		Assertions.assertNotNull(enderecoPrincipalAtualizado);
-		Assertions.assertEquals(2, enderecoPrincipalAtualizado.getId());
+		assertNotNull(enderecoPrincipalAtualizado);
+		assertEquals(2, enderecoPrincipalAtualizado.getId());
+
+	}
+	
+
+	@Test
+	void deveRetornarEnderecoPrincipal_QuandoBuscarEnderecoPrincipal() throws Exception {
+		var pessoa = new Pessoa();
+		pessoa.setId(1L);
+		pessoa.setNome("Ana Paula");
+		Date dataNascimento = Date.from(Instant.parse("1978-07-11T00:00:00.000+00:00"));
+		pessoa.setDataNascimento(dataNascimento);
+
+		var endereco = new Endereco();
+		endereco.setId(1L);
+		endereco.setCep("02040033");
+		endereco.setCidade("curitiba");
+		endereco.setLogradouro("rua de teste");
+		endereco.setNumero("22");
+		endereco.setPessoa(pessoa);
+
+		pessoa.setEnderecoPrincipalId(1L);
+
+		Mockito.when(pessoaRepository.findEnderecoPrincipalByPessoaId(Mockito.any())).thenReturn(endereco);
+		Endereco enderecoPrincipal = pessoaService.buscarEnderecosEnderecoPrincipal(pessoa.getId());
+		
+		assertNotNull(enderecoPrincipal);
+		assertEquals(1, enderecoPrincipal.getId());
 
 	}
 

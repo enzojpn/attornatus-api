@@ -52,7 +52,6 @@ public class PessoaController {
 		return pessoaService.listar();
 	}
 
-
 	@GetMapping("/{pessoaId}/enderecos")
 	public List<Endereco> listarEnderecosDaPessoa(@PathVariable Long pessoaId){
 		return pessoaService.buscarEnderecosPorIdPessoa(pessoaId);
@@ -62,7 +61,6 @@ public class PessoaController {
 	public void enderecoPrincipal(@PathVariable Long pessoaId, @PathVariable Long enderecoId) {
 		pessoaService.setEnderecoPrincipal(pessoaId ,enderecoId);
 	}
-	
 
 	@GetMapping("/{pessoaId}/endereco-principal")
 	public Endereco buscarEnderecoPrincipal(@PathVariable Long pessoaId){
