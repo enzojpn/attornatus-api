@@ -13,11 +13,22 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "pessoa")
 public class Pessoa {
+
+	public Pessoa() {
+	}
+
+	public Pessoa(Long id, String nome, Date dataNascimento, Long enderecoPrincipalId ) {
+		this.id = id;
+		this.nome = nome;
+		this.dataNascimento = dataNascimento;
+		this.enderecoPrincipalId = enderecoPrincipalId; 
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +37,8 @@ public class Pessoa {
 	@Column(name = "nome")
 	private String nome;
 
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	@Column(name = "data_nascimento")
 	private Date dataNascimento;
 

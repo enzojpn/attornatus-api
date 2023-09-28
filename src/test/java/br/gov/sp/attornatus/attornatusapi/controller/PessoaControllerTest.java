@@ -46,19 +46,19 @@ public class PessoaControllerTest {
 		pessoa.setId(1L);
 		pessoa.setNome("Joao da Silva");
 
-		Date dataNascimento = Date.from(Instant.parse("2013-06-09T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 
 		pessoa.setDataNascimento(dataNascimento);
 
 		Mockito.when(pessoaRepository.save(Mockito.any())).thenReturn(pessoa);
 
 		this.mockMvc.perform(post("/pessoas").contentType(MediaType.APPLICATION_JSON)
-				.content("{\"nome\": \"Joao da Silva\",\"dataNascimento\": \"2013-06-09T00:00:00.000+00:00\" }")
+				.content("{\"nome\": \"Joao da Silva\",\"dataNascimento\": \"2013-06-11T00:00:00.000Z\" }")
 				.accept(MediaType.APPLICATION_JSON)
 
 		).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.nome").value("Joao da Silva"))
 				.andExpect(content().json("{\r\n" + "    \"id\": 1,\r\n" + "    \"nome\": \"Joao da Silva\",\r\n"
-						+ "    \"dataNascimento\": \"2013-06-09T00:00:00.000+00:00\"\r\n"
+						+ "    \"dataNascimento\": \"2013-06-11T00:00:00.000Z\"\r\n"
 						+ ",\"enderecoPrincipalId\":null}", true));
 	}
 
@@ -77,19 +77,19 @@ public class PessoaControllerTest {
 		var pessoa = new Pessoa();
 		pessoa.setId(1L);
 		pessoa.setNome("Alain Prost");
-		Date dataNascimento = Date.from(Instant.parse("1978-02-11T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 		pessoa.setDataNascimento(dataNascimento);
 
 		Mockito.when(pessoaRepository.save(Mockito.any())).thenReturn(pessoa);
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.of(pessoa));
 
 		this.mockMvc.perform(put("/pessoas/1").contentType(MediaType.APPLICATION_JSON)
-				.content("{\"nome\": \"Jean Alesi\",\"dataNascimento\": \"1978-02-11T00:00:00.000+00:00\" }")
+				.content("{\"nome\": \"Jean Alesi\",\"dataNascimento\": \"2013-06-11T00:00:00.000Z\" }")
 				.accept(MediaType.APPLICATION_JSON)
 
 		).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.nome").value("Jean Alesi"))
 				.andExpect(content().json("{\r\n" + "    \"id\": 1,\r\n" + "    \"nome\": \"Jean Alesi\",\r\n"
-						+ "    \"dataNascimento\": \"1978-02-11T00:00:00.000+00:00\"\r\n"
+						+ "    \"dataNascimento\": \"2013-06-11T00:00:00.000Z\"\r\n"
 						+ ",\"enderecoPrincipalId\":null}", true));
 	}
 
@@ -99,7 +99,7 @@ public class PessoaControllerTest {
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
 		this.mockMvc.perform(put("/pessoas/1").contentType(MediaType.APPLICATION_JSON)
-				.content("{\"nome\": \"Jean Alesi\",\"dataNascimento\": \"1978-02-11T00:00:00.000+00:00\" }")
+				.content("{\"nome\": \"Jean Alesi\",\"dataNascimento\": \"2013-06-11T00:00:00.000Z\" }")
 				.accept(MediaType.APPLICATION_JSON)
 
 		).andDo(print()).andExpect(status().isNotFound());
@@ -110,7 +110,7 @@ public class PessoaControllerTest {
 		var pessoa = new Pessoa();
 		pessoa.setId(1L);
 		pessoa.setNome("Claire Wiliams");
-		Date dataNascimento = Date.from(Instant.parse("1958-10-08T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 		pessoa.setDataNascimento(dataNascimento);
 
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.of(pessoa));
@@ -119,7 +119,7 @@ public class PessoaControllerTest {
 
 		).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.nome").value("Claire Wiliams"))
 				.andExpect(content().json("{\r\n" + "    \"id\": 1,\r\n" + "    \"nome\": \"Claire Wiliams\",\r\n"
-						+ "    \"dataNascimento\": \"1958-10-08T00:00:00.000+00:00\"\r\n"
+						+ "    \"dataNascimento\": \"2013-06-11T00:00:00.000Z\"\r\n"
 						+ ",\"enderecoPrincipalId\":null}", true));
 	}
 
@@ -149,7 +149,7 @@ public class PessoaControllerTest {
 		pessoa2.setNome("Alice");
 		pessoa3.setNome("Yuri");
 
-		Date dataNascimento = Date.from(Instant.parse("1958-10-08T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 		pessoa1.setDataNascimento(dataNascimento);
 		pessoa2.setDataNascimento(dataNascimento);
 		pessoa3.setDataNascimento(dataNascimento);
@@ -164,11 +164,11 @@ public class PessoaControllerTest {
 
 		).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$", Matchers.hasSize(3)))
 				.andExpect(jsonPath("$[0].id").value(1)).andExpect(jsonPath("$[0].nome").value("Nuno"))
-				.andExpect(jsonPath("$[0].dataNascimento").value("1958-10-08T00:00:00.000+00:00"))
+				.andExpect(jsonPath("$[0].dataNascimento").value("2013-06-11T00:00:00.000Z"))
 				.andExpect(jsonPath("$[1].id").value(2)).andExpect(jsonPath("$[1].nome").value("Alice"))
-				.andExpect(jsonPath("$[1].dataNascimento").value("1958-10-08T00:00:00.000+00:00"))
+				.andExpect(jsonPath("$[1].dataNascimento").value("2013-06-11T00:00:00.000Z"))
 				.andExpect(jsonPath("$[2].id").value(3)).andExpect(jsonPath("$[2].nome").value("Yuri"))
-				.andExpect(jsonPath("$[2].dataNascimento").value("1958-10-08T00:00:00.000+00:00"));
+				.andExpect(jsonPath("$[2].dataNascimento").value("2013-06-11T00:00:00.000Z"));
 	}
 
 	@Test
@@ -185,7 +185,7 @@ public class PessoaControllerTest {
 		var pessoa = new Pessoa();
 		pessoa.setId(1L);
 		pessoa.setNome("Claire Wiliams");
-		Date dataNascimento = Date.from(Instant.parse("1958-10-08T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 		pessoa.setDataNascimento(dataNascimento);
 
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.of(pessoa));
@@ -202,7 +202,7 @@ public class PessoaControllerTest {
 		pessoa.setId(1L);
 		pessoa.setNome("Nigel Mansell");
 
-		Date dataNascimento = Date.from(Instant.parse("2013-06-09T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 		pessoa.setDataNascimento(dataNascimento);
 
 		var endereco = new Endereco();
@@ -234,7 +234,7 @@ public class PessoaControllerTest {
 	   .andExpect(jsonPath("$.length()", is(2)))
 		.andExpect(jsonPath("$[0].pessoa.id").value("1"))
 		.andExpect(jsonPath("$[0].pessoa.nome").value("Nigel Mansell"))
-		.andExpect(jsonPath("$[0].pessoa.dataNascimento").value("2013-06-09T00:00:00.000+00:00"))
+		.andExpect(jsonPath("$[0].pessoa.dataNascimento").value("2013-06-11T00:00:00.000Z"))
 		.andExpect(jsonPath("$[0].logradouro").value("rua de teste"))
 		.andExpect(jsonPath("$[0].cep").value("02040033")).andExpect(jsonPath("$[0].numero").value("22"))
 		.andExpect(jsonPath("$[0].cidade").value("curitiba"));
@@ -248,7 +248,7 @@ public class PessoaControllerTest {
 		var pessoa = new Pessoa();
 		pessoa.setId(1L);
 		pessoa.setNome("Nigel Mansell");
-		Date dataNascimento = Date.from(Instant.parse("2013-06-09T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 		pessoa.setDataNascimento(dataNascimento);
  
 		var enderecoPrincipal = new Endereco();
@@ -269,7 +269,7 @@ public class PessoaControllerTest {
 		).andDo(print()).andExpect(status().isOk())	
 		.andExpect(jsonPath("$.pessoa.id").value("1"))
 		.andExpect(jsonPath("$.pessoa.nome").value("Nigel Mansell"))
-		.andExpect(jsonPath("$.pessoa.dataNascimento").value("2013-06-09T00:00:00.000+00:00"))
+		.andExpect(jsonPath("$.pessoa.dataNascimento").value("2013-06-11T00:00:00.000Z"))
 		.andExpect(jsonPath("$.logradouro").value("avenida maringa"))
 		.andExpect(jsonPath("$.cep").value("8602222444")).
 		andExpect(jsonPath("$.numero").value("224"))

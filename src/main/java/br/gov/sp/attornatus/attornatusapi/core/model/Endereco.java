@@ -13,6 +13,20 @@ import javax.persistence.Table;
 @Table(name = "endereco")
 public class Endereco {
 
+	public Endereco() {
+
+	}
+
+	public Endereco(Long id, Pessoa pessoa, String logradouro, String cep, String numero, String cidade) {
+		super();
+		this.id = id;
+		this.pessoa = pessoa;
+		this.logradouro = logradouro;
+		this.cep = cep;
+		this.numero = numero;
+		this.cidade = cidade;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
