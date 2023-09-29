@@ -41,7 +41,7 @@ public class EnderecoServiceTest {
 		var pessoa = new Pessoa();
 		pessoa.setId(1L);
 		pessoa.setNome("Silvio Santos");
-		Date dataNascimento = Date.from(Instant.parse("2003-11-19T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 		pessoa.setDataNascimento(dataNascimento);
 
 		var endereco = new Endereco();
@@ -90,7 +90,7 @@ public class EnderecoServiceTest {
 		var pessoa = new Pessoa();
 		pessoa.setId(1L);
 		pessoa.setNome("Silvio Santos");
-		Date dataNascimento = Date.from(Instant.parse("2003-11-19T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 		pessoa.setDataNascimento(dataNascimento);
 
 		var endereco = new Endereco();
@@ -118,7 +118,7 @@ public class EnderecoServiceTest {
 		var pessoa = new Pessoa();
 		pessoa.setId(1L);
 		pessoa.setNome("Celio Santos");
-		Date dataNascimento = Date.from(Instant.parse("2011-11-11T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 		pessoa.setDataNascimento(dataNascimento);
 
 		var endereco = new Endereco();

@@ -37,7 +37,7 @@ public class PessoaServiceTest {
 		var pessoa = new Pessoa();
 		pessoa.setId(1L);
 		pessoa.setNome("Maria Santos");
-		Date dataNascimento = Date.from(Instant.parse("2003-11-19T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 		pessoa.setDataNascimento(dataNascimento);
 
 		Mockito.when(pessoaRepository.save(Mockito.any())).thenReturn(pessoa);
@@ -55,7 +55,7 @@ public class PessoaServiceTest {
 		var pessoa = new Pessoa();
 		pessoa.setId(1L);
 		pessoa.setNome("Felipe Massa");
-		Date dataNascimento = Date.from(Instant.parse("1988-01-19T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 		pessoa.setDataNascimento(dataNascimento);
 
 		Mockito.when(pessoaRepository.findById(Mockito.any())).thenReturn(Optional.of(pessoa));
@@ -98,7 +98,7 @@ public class PessoaServiceTest {
 		var pessoa = new Pessoa();
 		pessoa.setId(1L);
 		pessoa.setNome("Brian Herta");
-		Date dataNascimento = Date.from(Instant.parse("1978-07-11T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 		pessoa.setDataNascimento(dataNascimento);
 
 		var endereco = new Endereco();
@@ -135,7 +135,7 @@ public class PessoaServiceTest {
 		var pessoa = new Pessoa();
 		pessoa.setId(1L);
 		pessoa.setNome("Ana Paula");
-		Date dataNascimento = Date.from(Instant.parse("1978-07-11T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 		pessoa.setDataNascimento(dataNascimento);
 
 		var endereco = new Endereco();
@@ -173,7 +173,7 @@ public class PessoaServiceTest {
 		var pessoa = new Pessoa();
 		pessoa.setId(1L);
 		pessoa.setNome("Ana Paula");
-		Date dataNascimento = Date.from(Instant.parse("1978-07-11T00:00:00.000+00:00"));
+		Date dataNascimento = Date.from(Instant.parse("2013-06-11T00:00:00.000Z"));
 		pessoa.setDataNascimento(dataNascimento);
 
 		var endereco = new Endereco();
